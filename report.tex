@@ -1,0 +1,108 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+
+\ifCLASSINFOpdf
+  \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
+%
+\usepackage{url}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{SoNIC over 1G}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{\IEEEauthorblockN{Adithya Venkatesh, Nandini Nagaraj, Rafael Farias Marinheiro and Han Wang}
+\IEEEauthorblockA{
+Cornell University}
+}
+
+\maketitle
+
+
+\begin{abstract}
+%\boldmath
+
+In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. Current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices. In this project, we present a SoNIC design for 1GbE devices, extending the SoNIC ecosystem.
+
+\end{abstract}
+
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+
+In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. However, current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices. 
+
+\section{Background}
+
+Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+
+\subsection{Hardware}
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\section{Related Work}
+
+Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\section{Design}
+
+Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\section{Implementation}
+
+Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\section{Evaluation}
+
+Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\section{Conclusion}
+
+Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+
+\bibliographystyle{IEEEtran}
+\bibliography{report}
+
+\end{document}
+
+
