@@ -96,15 +96,27 @@ Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat 
 
 \section{Evaluation}
 
-Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+\subsection{8b10b Codec}
 
-Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+1G SoNIC requires an 8b10b encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8b10b encoder converts an 8-bit input into a 10-bit output, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieee8023}, and each 80bit input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder).The 8b10b Codec for 1G SoNIC is implemented in C. The software implementation functions as below. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.50]{encoder}
+  \caption{Encoder}
+  \label{fig:encoder}
+\end{figure}
+
+Decoding happens between the PCS and the Gigabit Media Independent Interface (GMII). Encoding happens between the PCS and the Physical Medium  Attachment (PMA). The codec is required to allow the clock to recover between states. This relaxation is provided by adding the 2 extra bits which increase the time required to process by 25\%.
+
+While the implementation was straight-forward it was necessary to ensure that the codec adhered to the 1Gbps line-rate of the device. The initial implementation used the right shift operator in C to count the number of bits set to 1 in the 8-bit input, however this proved to be too computationally expensive to let the codec meet the 1Gbps line-rate. The builtin popcount method, provided by GCC combined with compiler optimizations, proved to be the key for efficient computation of the number of bits in the input byte and let the program meet the line-rate requirements.
 
 \section{Related Work}
 
-Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+The codec was evaluated for two parameters, correcteness of the output produced and the performance of the codec.
 
-Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+\subsection{Correctness}
+
 
 
 \section{Conclusion}
@@ -115,5 +127,3 @@ Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat 
 \bibliography{report}
 
 \end{document}
-
-
