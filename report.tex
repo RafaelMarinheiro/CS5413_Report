@@ -66,7 +66,7 @@ In standard environments, both Data Link and the Physical (PHY) layers are defin
 
 \section{Background}
 
-According to the IEEE 802.3 standard \cite{ieeestandard}, the PHY of the 1000BASE-X standard consists of three sublayers: the Physical Coding Sublayer (PCS), the Physical Medium Attachment (PMA) sublayer, and the Physical Medium Dependent (PMD) sublayer (see figure \cite{fig:archi}). The PMD sublayer is responsible for transmitting and receiving symbols from the medium. The PMA sublayer is responsible for clock recovery and for serializing and deserializing the bitstream. The PCS sublayer comprises the encoding and decoding scheme used in the 1000BASE-X standard. In order to support different Gigabit technologies, the PCS communicates with the Gigabit Media Independent Interface (GMII). The IEEE 802.3 Clause 36 explains the PCS sublayer in further detail, but we summarize it below.
+According to the IEEE 802.3 standard \cite{ieeestandard}, the PHY of the 1000BASE-X standard consists of three sublayers: the Physical Coding Sublayer (PCS), the Physical Medium Attachment (PMA) sublayer, and the Physical Medium Dependent (PMD) sublayer (see figure \ref{fig:archi}). The PMD sublayer is responsible for transmitting and receiving symbols from the medium. The PMA sublayer is responsible for clock recovery and for serializing and deserializing the bitstream. The PCS sublayer comprises the encoding and decoding scheme used in the 1000BASE-X standard. In order to support different Gigabit technologies, the PCS communicates with the Gigabit Media Independent Interface (GMII). The IEEE 802.3 Clause 36 explains the PCS sublayer in further detail, but we summarize it below.
 
 \begin{figure}[t]
   \centering
@@ -88,21 +88,25 @@ In order to provide real-time access to the PHY layer in software, the user must
   \label{fig:design}
 \end{figure}
 
+In this design, the PMD and the PMA sublayers are implemented in hardware. The PMA layer stores data in and receives data from the ring buffers. A Direct Memory Access (DMA) engine must also be used to transfer the data from the hardware layer to the kernel implementation. The PCS and the upper layers are implemented in software. The PCS is implemented in kernel space to access the shared memory region between the hardware and software.
+
+In order to achieve the full line-rate of 1Gbps, the software implementation must be able to process and transfer data at 1.25Gbps, due to the 8B/10B encoding. While this does present some challenges, it is worth pointing out that this rate is much less than the 10.3125Gbps required by the 10GbE standard.
+
 \section{Implementation}
 
-Duis dictum malesuada arcu, ut tempor arcu tempus finibus. Proin posuere fringilla ullamcorper. Aenean sit amet eros odio. Pellentesque tristique facilisis placerat. Phasellus aliquam id nisl in ultricies. Pellentesque mattis suscipit nisl et ullamcorper. Pellentesque porta, justo ut dignissim rutrum, ante ante consectetur odio, a placerat sapien massa in erat. Nam blandit ultrices euismod. Vestibulum et magna rhoncus, fringilla sem vitae, hendrerit tortor. Nullam tincidunt purus ac est tempor ullamcorper.
+\subsection{Hardware}
 
-Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+To implement the hardware part of the design, we planned to use the Altera Stratix IV FPGA as our platform. The board is already equipped with SFP+ (Small Form-factor Pluggable) ports and it is equipped with 11.3 Gbps transceivers that can easily perform the 1 GbE PMA at line-speed.
 
-\section{Evaluation}
+We have implemented the PMA sublayer and the Buffer Rings in Verilog. We didn't manage 
 
-\subsection{8b10b Codec}
+\subsection{8B/10B Transmission Code}
 
-1G SoNIC requires an 8b10b encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8b10b encoder converts an 8-bit input into a 10-bit output, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieee8023}, and each 80bit input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder).The 8b10b Codec for 1G SoNIC is implemented in C. The software implementation functions as below. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
+1G SoNIC requires an 8B/10B encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8B/10B encoder converts an octet input into a 10-bit code group, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieeestandard}, and each octet input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder). The 8B/10B Codec for 1G SoNIC was implemented in C. The software implementation works as follows. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
 
-\begin{figure}[h!]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.50]{encoder}
+  \includegraphics[scale=0.3]{images/encoder}
   \caption{Encoder}
   \label{fig:encoder}
 \end{figure}
@@ -111,13 +115,13 @@ Decoding happens between the PCS and the Gigabit Media Independent Interface (GM
 
 While the implementation was straight-forward it was necessary to ensure that the codec adhered to the 1Gbps line-rate of the device. The initial implementation used the right shift operator in C to count the number of bits set to 1 in the 8-bit input, however this proved to be too computationally expensive to let the codec meet the 1Gbps line-rate. The builtin popcount method, provided by GCC combined with compiler optimizations, proved to be the key for efficient computation of the number of bits in the input byte and let the program meet the line-rate requirements.
 
-\section{Related Work}
+\section{Evaluation}
 
 The codec was evaluated for two parameters, correcteness of the output produced and the performance of the codec.
 
 \subsection{Correctness}
 
-
+\section{Related Work}
 
 \section{Conclusion}
 
