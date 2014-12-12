@@ -103,7 +103,7 @@ While the implementation was straight-forward it was necessary to ensure that th
 
 \section{Evaluation}
 
-The 8b10b codec was evaluated to measure the rate at which it processes data and to ensure that it met the 1Gbps requirement. The encoder takes an 8-bit input, 1Gb is $1024^3 = 1073741824bits$ and is the same as $134217728 x$ 8-bit inputs. An encoder that meets the line-rate requirement would process this amount of data withing a 1 second window. In the same vein, a decoder that performs at line-rate would process $107374183 x $ 10-bit inputs within this 1 second. The encoder and decoder were both tested for varying input sizes in increments of 1Gb for each test and the results are visible below.
+The 8b10b codec was evaluated to measure the rate at which it processes data and to ensure that it met the 1Gbps requirement. The encoder takes an 8-bit input, 1Gb is $1024^3 = 1073741824bits$ and is the same as $134217728 \times$ 8-bit inputs. An encoder that meets the line-rate requirement would process this amount of data withing a 1 second window. In the same vein, a decoder that performs at line-rate would process $107374183 \times$ 10-bit inputs within this 1 second. The encoder and decoder were both tested for varying input sizes in increments of 1Gb for each test and the results are visible below.
 
 \begin{figure}[h!]
   \centering
