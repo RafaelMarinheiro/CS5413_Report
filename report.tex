@@ -54,7 +54,7 @@ Cornell University}
 \begin{abstract}
 %\boldmath
 
-In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. Current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices. In this project, we present a SoNIC design for 1GbE devices, extending the SoNIC ecosystem.
+In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. Current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices. In this project, we present a SoNIC design for 1GbE devices as an effort to extend the SoNIC ecosystem.
 
 \end{abstract}
 
@@ -62,7 +62,7 @@ In standard environments, both Data Link and the Physical (PHY) layers are defin
 
 \section{Introduction}
 
-In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. However, current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices.
+In standard environments, both Data Link and the Physical (PHY) layers are defined in the Network Interface Cards (NIC) and they cannot be accessed in real-time via software. However, these lower layers contain valuable information that can be used to measure and to improve the performance of the network. Recently, SoNIC \cite{lee2013sonic} was proposed to provide real-time access to the Physical Layer and it was used to accurately measure the performance of a high-speed wired complex network \cite{wang2014timing}. However, current SoNIC design and implementation only operates in 10 GbE (Gigabit Ethernet) devices. In this project, we present a SoNIC design for 1GbE devices as an effort to extend the SoNIC ecosystem.
 
 \section{Background}
 
@@ -81,7 +81,7 @@ When Ethernet frames are passed from the data link layer to the PHY, they are re
 
 In order to provide real-time access to the PHY layer in software, the user must have direct access to the PCS layer. In our solution, the functionalities of the PCS layer must be implemented in software while the transmission and reception of bits can be handled by the hardware. In figure \ref{fig:design}, we present our design.
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.5\textwidth]{images/design.pdf}
   \caption{SoNIC over 1G Architecture}
@@ -98,13 +98,13 @@ In order to achieve the full line-rate of 1Gbps, the software implementation mus
 
 To implement the hardware part of the design, we planned to use the Altera Stratix IV FPGA as our platform. The board is already equipped with SFP+ (Small Form-factor Pluggable) ports and it is equipped with 11.3 Gbps transceivers that can easily perform the 1 GbE PMA at line-speed.
 
-We have implemented the PMA sublayer and the Buffer Rings in Verilog. We didn't manage 
+We have implemented the PMA sublayer and the Buffer Rings in Verilog. We didn't manage to implement the DMA engine in hardware, but we can easily reuse the original SoNIC DMA implementation to transfer data between the Hardware Layer and the Software Layer.
 
 \subsection{8B/10B Transmission Code}
 
 1G SoNIC requires an 8B/10B encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8B/10B encoder converts an octet input into a 10-bit code group, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieeestandard}, and each octet input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder). The 8B/10B Codec for 1G SoNIC was implemented in C. The software implementation works as follows. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
   \includegraphics[scale=0.3]{images/encoder}
   \caption{Encoder}
@@ -115,31 +115,39 @@ Decoding happens between the PCS and the Gigabit Media Independent Interface (GM
 
 While the implementation was straight-forward it was necessary to ensure that the codec adhered to the 1Gbps line-rate of the device. The initial implementation used the right shift operator in C to count the number of bits set to 1 in the 8-bit input, however this proved to be too computationally expensive to let the codec meet the 1Gbps line-rate. The builtin popcount method, provided by GCC combined with compiler optimizations, proved to be the key for efficient computation of the number of bits in the input byte and let the program meet the line-rate requirements.
 
-\section{Evaluation}
+\section{Evaluation and Validation}
 
-The 8b10b codec was evaluated to measure the rate at which it processes data and to ensure that it met the 1Gbps requirement. The encoder takes an 8-bit input, 1Gb is $1024^3 = 1073741824bits$ and is the same as $134217728 x$ 8-bit inputs. An encoder that meets the line-rate requirement would process this amount of data withing a 1 second window. In the same vein, a decoder that performs at line-rate would process $107374183 x $ 10-bit inputs within this 1 second. The encoder and decoder were both tested for varying input sizes in increments of 1Gb for each test and the results are visible below.
+\subsection{Hardware Implementation}
 
-\begin{figure}[h!]
+  We have tested our hardware implementation against a testbench available in \cite{testbench}. Our implementation passed all tests provided.
+
+\subsection{8B/10B Transmission Code}
+
+\subsubsection{Performance}
+
+The 8B/10B codec was evaluated to measure the rate at which it processes data and to ensure that it met the 1Gbps requirement. The encoder takes an 8-bit input, 1Gb is $1024^3 = 1073741824$ bits, or $134217728$ bytes. An encoder that meets the line-rate requirement would process this amount of data withing a 1 second window. In the same vein, a decoder that performs at line-rate would process $107374183$ 10-bit inputs within this 1 second. The encoder and decoder were both tested for varying input sizes in increments of 1Gb for each test and the results are available in figure \ref{fig:encoder_performance} and in figure \ref{fig:decoder_performance}.
+
+\begin{figure}[h]
   \centering
-  \includegraphics[scale=0.50]{encoder_figure}
+  \includegraphics[scale=0.45]{images/encoder_figure}
   \caption{Encoder Performance}
   \label{fig:encoder_performance}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
-  \includegraphics[scale=0.50]{decoder_figure}
+  \includegraphics[scale=0.45]{images/decoder_figure}
   \caption{Decoder Performance}
   \label{fig:decoder_performance}
 \end{figure}
 
-\subsection{Correctness}
+\subsubsection{Correctness}
 
-\section{Related Work}
+A correct codec would process data as specified in the Table 36 of the IEEE Standard for Ethernet\cite{ieeestandard}, this could be tested with a simple script. Moreover when run in this sequence $y\leftarrow encode(x)$ followed by $z\leftarrow decode(y)$, a correct encoder would produce $z$ such that $x=z$, if $x\neq z$ - the codec is performing incorrectly. The codec passed both tests with the value of running disparity being hard coded to $+1 \& -1$. The codec also exposes a function $self\_test\_8b10b$ that accepts two parameters, an array of 8-bit values and the length of the array, that fails if the encoder fails to perform correctly.
 
 \section{Conclusion}
 
-Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat lacus id mauris convallis, quis vehicula odio rutrum. Aliquam dictum mauris in nisi tristique suscipit. Nulla ullamcorper pellentesque dui, elementum congue tortor lacinia dignissim. In rutrum id justo id euismod. Curabitur varius diam lorem, nec mollis nibh maximus ut. Vestibulum malesuada dui convallis massa dictum, vel euismod tellus hendrerit. Etiam vitae urna faucibus, mattis tellus sed, scelerisque ante. Sed vel lectus convallis, egestas ante ut, laoreet dui. Sed iaculis arcu non auctor dignissim. Donec efficitur est a nunc accumsan cursus. Nulla orci erat, placerat eu erat vel, ultricies molestie magna. Quisque eleifend lacus vel urna ullamcorper imperdiet. Vestibulum in odio a tellus porttitor malesuada.
+In this project, we have designed a 1GbE version of SoNIC. We have developed a working implementation of the encoding/decoding of the physical layer of 1GbE in the software and also a partial working implementation of the hardware layer. We hope that this effort contributes to the extension the SoNIC ecosystem, allowing more system programmers to use it as a valuable tool for cross-network-layer research.
 
 \bibliographystyle{IEEEtran}
 \bibliography{report}
