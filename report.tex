@@ -88,7 +88,7 @@ Quisque eget metus id massa pulvinar laoreet sit amet nec ligula. Donec feugiat 
 
 \subsection{8b10b Codec}
 
-1G SoNIC requires an 8b10b encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8b10b encoder converts an 8-bit input into a 10-bit output, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieee8023}, and each 80bit input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder).The 8b10b Codec for 1G SoNIC is implemented in C. The software implementation functions as below. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
+1G SoNIC requires an 8b10b encoder/decoder to be available to the Physical Coding Sublayer (PCS). The 8b10b encoder converts an 8-bit input into a 10-bit output, the decoder does the opposite. Valid inputs to the codec are available in the \cite{ieeestandard}, and each 80bit input maps to one of two 10-bit outputs depending on the running disparity of the codec (difference between the number of set and unset bits in each input to the encoder).The 8b10b Codec for 1G SoNIC is implemented in C. The software implementation functions as below. It has two 3/4 lookup tables and two 5/6 lookup tables, one for the positive running disparity and the other for the negative running disparity, containing 8 and 32 entries respectively. The decoder works with a reverse lookup table and does not have to keep track of the running disparity.
 
 \begin{figure}[h!]
   \centering
@@ -121,6 +121,7 @@ The 8b10b codec was evaluated to measure the rate at which it processes data and
 
 \subsection{Correctness}
 
+A correct codec would process data as specified in the Table 36 of the IEEE Standard for Ethernet\cite{ieeestandard}, this could be tested with a simple script. Moreover when run in this sequence $y\leftarrow encode(x)$ followed by $z\leftarrow decode(y)$, a correct encoder would produce $z$ such that $x=z$, if $x\neq z$ - the codec is performing incorrectly. The codec passed both tests with the value of running disparity being hard coded to $+1 \& -1$. The codec also exposes a function $self\_test\_8b10b$ that accepts two parameters, an array of 8-bit values and the length of the array, that fails if the encoder fails to perform correctly.
 
 \section{Conclusion}
 
